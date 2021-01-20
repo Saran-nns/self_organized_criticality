@@ -1,6 +1,5 @@
-# Neural Avalanche Analysis
-Criticality analysis in self organizing networks using avalanche, branching factors and power law 
-
+# Self-Organizing Criticality:
+Criticality analysis in Self Organizing Networks using avalanche, branching factors and power laws and their relationships 
 
 ## Workflow:
 - [x] Avalanche size, interval, duration
