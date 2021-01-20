@@ -4,7 +4,7 @@ This repository has methods to investigate self organizing criticality in brain 
 ## Workflow:
 - [x] Avalanche size, interval, duration
 - [x] Power laws (Zipf's law) for avalanche size, interval, duration
-- [x] Exponent Estimate and Uncertainity
+- [x] Exponent Estimate and Uncertainty
 - [x] Plots: Histograms in Linear and Logscale
 - [ ] Scaling function
 - [ ] Exponent Relationships
