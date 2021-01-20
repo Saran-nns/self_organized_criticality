@@ -1,5 +1,5 @@
 # Self-Organizing Criticality:
-Criticality analysis in Self Organizing Networks using avalanche, branching factors and power laws and their relationships 
+This repository has methods to investigate self organizing criticality in brain inspired neural networks. 
 
 ## Workflow:
 - [x] Avalanche size, interval, duration
