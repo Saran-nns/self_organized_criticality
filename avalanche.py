@@ -1,3 +1,4 @@
+from matplotlib.pyplot import plot
 import numpy as np
 import matplotlib.pyplot as plt
 import itertools
@@ -5,164 +6,34 @@ from operator import itemgetter
 from utils import compute_spike_count
 
 
-class IsingModel(object):
-
-    """Ising model of the reservoir pool acitivity at various time scales"""
-
+class Avalanches(object):
     def __init__(self):
         pass
 
-    @property
-    def running_mean(self, X: np.array, window_size: int):
-
-        """Measure the moving average of neural firing rate given the time window
-
-        Args:
-            X (np.array): Neural activity
-            
-            window_size (int): Time window size
-
-        Returns:
-            list: Moving average with the size equals len(X)//window_size
-        """
-
-        cumsum = np.cumsum(np.insert(X, 0, 0))
-        return (cumsum[window_size:] - cumsum[:-window_size]) / window_size
-
-    def compute_spin(self, X: np.array, window_sizes: list = [1]):
-
-        """Compute Sigma {-1,1}^N of neural population activity vector, given window sizes for the mean
-
-        Args:
-            X (np.array): Neural activity
-            
-            window_sizes (list, optional): Time window sizes to compute the spin at various time scales. Defaults to [1].
-
-        Returns:
-            dict : Neural spins at different time scales
-        """
-
-        # Placeholder for sigma of neural population
-        sigma = {}
-        sigma.fromkeys(window_sizes)
-        for window in window_sizes:
-            sigma_ = []
-            for neuron in list(range(X.shape[1])):
-                mean = self.running_mean(X[:, neuron], window)
-                mean[mean > 0] = 1
-                mean[mean <= 0] = -1
-                sigma_.append(list(mean))
-            sigma["%s" % window] = np.asarray(
-                sigma_
-            ).transpose()  # Rows= time dim, col= neurons
-        return sigma
-
-    def mean_spiking_activity(self, X: np.array, window_sizes: list = [1]):
-
-        """Compute mean spiking probability of each neuron given their spins at different time scales
-
-        Args:
-            X (np.array): Neural activity
-            
-            window_sizes (list, optional): Time window sizes to compute the spin at various time scales. Defaults to [1].
-
-        Returns:
-            dict : Mean spiking probability of each neuron given their spins at different time scales
-        """
-
-        # Compute spins with respect to window size
-        sigma = self.compute_spin(X, window_sizes=window_sizes)
-        # Compute mean of each neuron's spin variance
-        m = {}
-        m.fromkeys(window_sizes)
-        for window in window_sizes:
-            m["%s" % window] = np.mean(sigma["%s" % window], axis=1)
-        return m
-
-    def compute_Q(self, X: np.array, window_sizes: list = [1]):
-
-        """Compute two point function between pairs of neurons in the network
-
-        Args:
-            X (np.array): Neural activity
-            
-            window_sizes (list, optional): Time window sizes to compute the spin at various time scales. Defaults to [1].
-
-        Returns:
-            [type]: [description]
-        """
-        num_neurons = X.shape[1]
-        # Compute two-point function of spins with respect to window size
-        sigma = self.compute_spin(X, window_sizes=window_sizes)
-
-        # Two point function between neurons given their spin
-        Q = {}
-        Q.fromkeys(window_sizes)
-        q = np.zeros((num_neurons, num_neurons))
-        for window in window_sizes:
-            for i in list(range(1, num_neurons)):
-                for j in range(i):
-                    q[i][j] = np.mean(
-                        sigma["%s" % window][:, i] * sigma["%s" % window][:, j]
-                    )
-            q_ = q + q.T  # Is symmetric
-            np.fill_diagonal(q_, 1)
-            Q["%s" % window] = q_
-        return Q, sigma
-
-    def plotQ(self, Q: dict):
-
-        """Plot Q, the two point function values between pairs of neurons in the network
-        Args:
-            Q (dict): Two point function between pairs of neurons in the network
-        
-        Returns:
-            plot
-        """
-
-        # Create subplots
-        ax_size = len(Q.keys())
-        assert ax_size != 0, "Missing time window"
-
-        if ax_size != 1:
-            # Check is ax_size even or odd
-            if ax_size % 2 != 0:
-                ax_size += 1
-            rows, cols = ax_size // 2, ax_size // 2
-
-            fig, axs = plt.subplots(rows, cols)
-            fig.suptitle("Horizontally stacked subplots")
-            for i in range(len(axs)):
-                axs[i].imshow(Q.values[i])
-                axs[i].title(f"Q at time scale {Q.keys()[i]}")
-                axs[i].tight_layout()
-                axs[i].colorbar(fraction=0.046, pad=0.04)
-
-        else:
-
-            plt.imshow(Q.values()[0])
-            plt.title(f"Q at time scale {Q.keys()[0]}")
-            plt.tight_layout()
-            plt.colorbar(fraction=0.046, pad=0.04)
-
-        return plt.show()
-
     def avalanche_observables(self, X: np.array, activity_threshold: int = 1):
-        """Avalanche sizes, durations and interval sizes
 
-        - Set the neural activity =0 if < activity_threshold % of size of the network
-        - Slice the array by non-zero value indices
-        - Count the number of items in each slices: Duration of avalanches
-        - Sum the items in each slices: Size of avalanches
-        - Slice the array into zero value indices
-        - Count number of items in each slices: Duration of inter avalanche intervals
+        """Avalanche sizes, durations and interval sizes
+        
+            - Set the neural activity =0 if < activity_threshold % of size of the network
+            - Slice the array by non-zero value indices
+            - Count the number of items in each slices: Duration of avalanches
+            - Sum the items in each slices: Size of avalanches
+            - Slice the array into zero value indices
+            - Count number of items in each slices: Duration of inter avalanche intervals
         
         Args:
             X (np.array): Neural activity
-            activity_threshold (int, optional): [description]. Defaults to 1.
+            
+            activity_threshold (int, optional): Threshold of number of spikes at each time step. Spike counts below threshold will be set to zero.Defaults to 1.
 
         Returns:
-            [type]: [description]
+            spike_count (np.array): Number of spikes at each time step
+            
+            avalanche_durations (np.array): Avalanches durations
+            
+            avalanche_sizes (np.array): Number of spikes within each avalanche duration
+            
+            iai (np.array): Time interval between avalanches
         """
 
         spike_count = np.asarray(compute_spike_count(X))
@@ -170,7 +41,6 @@ class IsingModel(object):
         spike_count[spike_count < threshold] = 0
 
         # Avalanche size and duration
-
         # Get the non zero indices
         aval_idx = np.nonzero(spike_count)[0]
 
@@ -206,16 +76,137 @@ class IsingModel(object):
 
         return spike_count, avalanche_durations, avalanche_sizes, iai
 
+    @staticmethod
+    def avalanche_plot(avalanches: list):
+        """Plot the avalanches observed
 
-def test_avalanche(X, window_sizes=[1, 2, 5, 10, 20]):
-    """Test avalanche module
+        Args:
+            avalanches (list): Observed avalanches in the neural activity
 
-    Args:
-        X (np.array): Neural activity
-        window_sizes (list, optional): Time window sizes to compute the spin at various time scales. Defaults to [1].
-    """
-    # Compute moving average and spin
-    sigma = IsingModel().compute_spin(X, window_sizes=window_sizes)
-    m = IsingModel().mean_spiking_activity(X, window_sizes=window_sizes)
-    Q, sigma = IsingModel().compute_Q(X, window_sizes=window_sizes)
+        Returns:
+            plot
+        """
+
+        plt.plot(avalanches, label="avalanche")
+        plt.title("Avalanches")
+        plt.tight_layout()
+        plt.legend()
+        plt.show()
+
+    @staticmethod
+    def plot(avalanches: list):
+        """Plot the avalanches observed
+
+        Args:
+            avalanches (list): Observed avalanches in the neural activity
+
+        Returns:
+            plot
+        """
+
+        plt.plot(avalanches, label="avalanche")
+        plt.title("Avalanches")
+        plt.tight_layout()
+        plt.legend()
+        plt.show()
+
+    @staticmethod
+    def durations_histogram(durations: list, bin_size: int = 10, plot: bool = True):
+        """Plot the avalanche durations observed in linear and log scales
+
+        Args:
+            durations (list): Observed avalanche durations in the neural activity
+            
+            bin_size (int): Number of bins for avalanche durations
+
+            plot (bool): If True, plot the histogram in linear and logscale
+            
+        Returns:
+            dur_hist (tuple): Histogram of obsered durations
+        """
+
+        # Histgram of avalanche sizes
+        dur_hist = np.histogram(durations, bin_size)
+        if plot:
+            plt.figure(figsize=(16, 5))
+            plt.subplot(221)
+            plt.plot(dur_hist[1][:-1], dur_hist[0])
+            plt.title("Avalanche durations in histogram in linear scale")
+            plt.subplot(222)
+            plt.plot(np.log(dur_hist[1][:-1]), np.log(dur_hist[0]))
+            plt.title("Avalanche durations histogram in loglog scale")
+            plt.show()
+        return dur_hist
+
+    @staticmethod
+    def size_histogram(sizes: list, bin_size: int = 100, plot: bool = True):
+        """ Histogram of avalanche size observed in linear and log scales 
+
+        Args:
+            durations (list): Observed avalanche durations in the neural activity
+            
+            bin_size (int): Number of bins for avalanche sizes
+            
+            plot (bool): If True, plot the histogram in linear and logscale
+
+        Returns:
+            size_hist (tuple): Histogram of obsered durations
+        """
+
+        # Histgram of avalanche sizes
+        size_hist = np.histogram(sizes, bin_size)
+        if plot:
+            plt.figure(figsize=(16, 5))
+            plt.subplot(221)
+            plt.plot(np.log(size_hist[1][:-1]), np.log(size_hist[0]))
+            plt.title("Avalanche sizes histogram in loglog scale")
+            plt.subplot(222)
+            plt.plot(size_hist[1][:-1], size_hist[0])
+            plt.title("Avalanche sizes in histogram in linear scale")
+            plt.show()
+
+        return size_hist
+
+    @staticmethod
+    def iai_histogram(iai: list, bin_size: int = 100, plot: bool = True):
+        """Plot the histogram of inter-avalanche intervals observed in linear and log scales 
+
+        Args:
+            iai (list): Observed inter-avalanche intervals in the neural activity
+            
+            bin_size (int): Number of bins for inter-avalanche intervals
+            
+            plot (bool): If True, plot the histogram in linear and logscale
+
+        Returns:
+            iai_hist: Histogram of obsered durations
+        """
+
+        # Histgram of avalanche sizes
+        iai_hist = np.histogram(iai, bin_size)
+        if plot:
+            plt.figure(figsize=(16, 5))
+            plt.subplot(221)
+            plt.plot(np.log(iai_hist[1][:-1]), np.log(iai_hist[0]))
+            plt.title("Avalanche sizes histogram in loglog scale")
+            plt.subplot(222)
+            plt.plot(iai_hist[1][:-1], iai_hist[0])
+            plt.title("Avalanche sizes in histogram in linear scale")
+            plt.show()
+        return iai_hist
+
+
+def test_avalanche(X: np.array, activity_threshold: int = 1):
+
+    (
+        avalanches,
+        avalanche_durations,
+        avalanche_sizes,
+        iai,
+    ) = Avalanches().avalanche_observables(X, activity_threshold=activity_threshold)
+
+    Avalanches().plot(avalanches)
+    Avalanches().durations_histogram(avalanche_durations, plot=True)
+    Avalanches().size_histogram(avalanche_sizes, plot=True)
+    Avalanches().iai_histogram(iai, plot=True)
 
