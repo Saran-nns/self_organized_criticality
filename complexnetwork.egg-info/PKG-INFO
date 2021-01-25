@@ -1,0 +1,35 @@
+Metadata-Version: 2.1
+Name: complexnetwork
+Version: 0.1.0
+Summary: Complex networks and Self-Organized Criticality
+Home-page: https://github.com/Saran-nns/self_organized_criticality
+Author: Saranraj Nambusubramaniyan
+Author-email: saran_nns@hotmail.com
+License: OSI Approved :: MIT License
+Description: # Self-Organizing Criticality:
+        This repository has methods to investigate self organizing criticality in Complex networks. 
+        
+        
+        ## Workflow:
+        - [x] Avalanche size, interval, duration
+        - [x] Power laws (Zipf's law) for avalanche size, interval, duration
+        - [x] Exponent Estimate and Uncertainty
+        - [x] Plots: Histograms in Linear and Logscale
+        - [ ] Scaling function
+        - [ ] Exponent Relationships
+        - [ ] Branching Process
+        - [ ] Different Phase Transitions
+        - [x] PyPi package
+        - [ ] ReadMe
+        - [ ] References
+        
+Keywords: Brain-Inspired Computing,Complex Networks,Criticality,Artificial Neural Networks,Neuro Informatics,Spiking Cortical Networks,Neural Connectomics,Neuroscience,Artificial General Intelligence,Neural Information Processing
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Description-Content-Type: text/markdown
