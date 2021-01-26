@@ -25,10 +25,10 @@ pip install git+https://github.com/Saran-nns/complexnetwork
 - [x] Exponent Estimate and Uncertainty
 - [x] Plotters
 - [ ] Scaling function
-- [ ] Exponent Relationships
-- [ ] Branching Process
+- [ ] Exponent Relationships - Avalanche Lifetime Exponent, Size distribution exponent, Height rescaling Exponent
+- [ ] Branching Process - Branching Ratio
 - [ ] Different Phase Transitions
-- [ ] Information transfer - [x] Mutual Information, [x] Transfer Entropy , [x] Partial Information Decomposition
+- [ ] Information transfer - Mutual Information, Transfer Entropy , Partial Information Decomposition
 - [x] PyPi package
 - [ ] AutoDoc
 - [ ] References
