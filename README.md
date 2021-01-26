@@ -28,7 +28,7 @@ pip install git+https://github.com/Saran-nns/complexnetwork
 - [ ] Exponent Relationships
 - [ ] Branching Process
 - [ ] Different Phase Transitions
-- [ ] Information transfer
+- [ ] Information transfer - [x] Mutual Information, [x] Transfer Entropy , [x] Partial Information Decomposition
 - [x] PyPi package
 - [ ] AutoDoc
 - [ ] References
