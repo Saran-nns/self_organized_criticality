@@ -23,12 +23,13 @@ pip install git+https://github.com/Saran-nns/complexnetwork
 - [x] Avalanche size, interval, duration
 - [x] Power laws (Zipf's law) for avalanche size, interval, duration
 - [x] Exponent Estimate and Uncertainty
+- [x] Ising Model - One and Two point function correlation and covariance
 - [x] Plotters
 - [ ] Scaling function
 - [ ] Exponent Relationships - Avalanche Lifetime Exponent, Size distribution exponent, Height rescaling Exponent
 - [ ] Branching Process - Branching Ratio
 - [ ] Different Phase Transitions
-- [ ] Information transfer - Mutual Information, Transfer Entropy , Partial Information Decomposition
+- [ ] Information transfer - Mutual Information, Transfer Entropy , Partial Information Decomposition, Active information storage, Memory capacity
 - [x] PyPi package
 - [ ] AutoDoc
 - [ ] References
