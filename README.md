@@ -1,5 +1,12 @@
 # Self-Organizing Criticality:
-This repository has methods to investigate self organizing criticality in Complex networks. 
+This repository has methods to investigate criticality in Complex networks. 
+
+[![Build Status](https://travis-ci.org/Saran-nns/complexnetwork.svg?branch=master)](https://travis-ci.org/Saran-nns/complexnetwork)
+[![codecov](https://codecov.io/gh/Saran-nns/self_organized_criticality/branch/master/graph/badge.svg)](https://codecov.io/gh/Saran-nns/self_organized_criticality)
+[![PyPI version](https://badge.fury.io/py/complexnetwork.svg)](https://badge.fury.io/py/complexnetwork)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+![PyPI - Downloads](https://img.shields.io/pypi/dw/complexnetwork.svg)
+[![License](https://img.shields.io/badge/License-MIT%20-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Installation
 
