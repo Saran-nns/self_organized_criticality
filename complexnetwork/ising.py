@@ -139,9 +139,7 @@ class IsingModel(object):
 
                     im = ax[i, j].imshow(Q_vals[i + j])
 
-                    ax[i, j].legend([im], ["Timescale" + str(Q_keys[i])
-
-            plt.subplots_adjust(wspace=0, hspace=0)
+                    ax[i, j].legend([im], ["Timescale" + str(Q_keys[i])])
 
             cbar_ax = fig.add_axes([0.95, 0.15, 0.01, 0.8])
             fig.colorbar(im, cax=cbar_ax)
