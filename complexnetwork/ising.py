@@ -174,20 +174,20 @@ def test_ising(X, window_sizes=[1, 2, 5, 10, 20]):
     p = IsingModel().plotQ(Q)
 
 
-if __name__ == "__main__":
-    import pickle
+# if __name__ == "__main__":
+#     import pickle
 
-    # Getting back the pickled matrices:
-    with open("../sample_matrices.pkl", "rb") as f:
-        (
-            matrices_dict,
-            Exc_activity,
-            Inh_activity,
-            Rec_activity,
-            num_active_connections,
-        ) = pickle.load(f)
+#     # Getting back the pickled matrices:
+#     with open("../sample_matrices.pkl", "rb") as f:
+#         (
+#             matrices_dict,
+#             Exc_activity,
+#             Inh_activity,
+#             Rec_activity,
+#             num_active_connections,
+#         ) = pickle.load(f)
 
-    X = np.asarray(Exc_activity)
-    activity_threshold = 1
-    window_sizes = [2, 5]
-    test_ising(X)
+#     X = np.asarray(Exc_activity)
+#     activity_threshold = 1
+#     window_sizes = [2, 5]
+#     test_ising(X)
