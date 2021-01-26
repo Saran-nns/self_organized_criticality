@@ -139,9 +139,7 @@ class IsingModel(object):
 
                     im = ax[i, j].imshow(Q_vals[i + j])
 
-                    ax[i, j].legend([im], [f"Q at time scale {Q_keys[i+j]}"])
-
-                    # ax[i, j].set_title()
+                    ax[i, j].legend([im], ["Timescale" + str(Q_keys[i])
 
             plt.subplots_adjust(wspace=0, hspace=0)
 
