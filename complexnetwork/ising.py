@@ -149,7 +149,7 @@ class IsingModel(object):
         else:
 
             plt.imshow(Q.values()[0])
-            plt.title(f"Q at time scale {Q.keys()[0]}")
+            plt.title("Q at time scale" + str(Q.keys()[0]))
             plt.tight_layout()
             plt.colorbar(fraction=0.046, pad=0.04)
 
