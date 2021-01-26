@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import itertools
 from operator import itemgetter
-from utils import compute_spike_count
+from complexnetwork.utils import compute_spike_count
 
 
 class Avalanches(object):

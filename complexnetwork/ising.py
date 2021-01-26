@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 
 
 class IsingModel(object):
@@ -9,7 +10,6 @@ class IsingModel(object):
     def __init__(self):
         pass
 
-    @property
     def running_mean(self, X: np.array, window_size: int):
 
         """Measure the moving average of neural firing rate given the time window
@@ -130,13 +130,25 @@ class IsingModel(object):
                 ax_size += 1
             rows, cols = ax_size // 2, ax_size // 2
 
-            fig, axs = plt.subplots(rows, cols)
-            fig.suptitle("Horizontally stacked subplots")
-            for i in range(len(axs)):
-                axs[i].imshow(Q.values[i])
-                axs[i].title(f"Q at time scale {Q.keys()[i]}")
-                axs[i].tight_layout()
-                axs[i].colorbar(fraction=0.046, pad=0.04)
+            fig, ax = plt.subplots(nrows=rows, ncols=cols, sharey=True)
+            fig.suptitle("Q at various time scales")
+            Q_vals = list(Q.values())
+            Q_keys = list(Q.keys())
+            for i in range(rows):
+                for j in range(cols):
+
+                    im = ax[i, j].imshow(Q_vals[i + j])
+
+                    ax[i, j].legend([im], [f"Q at time scale {Q_keys[i+j]}"])
+
+                    # ax[i, j].set_title()
+
+            plt.subplots_adjust(wspace=0, hspace=0)
+
+            cbar_ax = fig.add_axes([0.95, 0.15, 0.01, 0.8])
+            fig.colorbar(im, cax=cbar_ax)
+            fig.legend()
+            fig.tight_layout()
 
         else:
 
@@ -153,7 +165,7 @@ def test_ising(X, window_sizes=[1, 2, 5, 10, 20]):
 
     Args:
         X (np.array): Neural activity
-        
+
         window_sizes (list, optional): Time window sizes to compute the spin at various time scales. Defaults to [1].
     """
     sigma = IsingModel().compute_spin(X, window_sizes=window_sizes)
@@ -161,3 +173,21 @@ def test_ising(X, window_sizes=[1, 2, 5, 10, 20]):
     Q, sigma = IsingModel().compute_Q(X, window_sizes=window_sizes)
     p = IsingModel().plotQ(Q)
 
+
+if __name__ == "__main__":
+    import pickle
+
+    # Getting back the pickled matrices:
+    with open("../sample_matrices.pkl", "rb") as f:
+        (
+            matrices_dict,
+            Exc_activity,
+            Inh_activity,
+            Rec_activity,
+            num_active_connections,
+        ) = pickle.load(f)
+
+    X = np.asarray(Exc_activity)
+    activity_threshold = 1
+    window_sizes = [2, 5]
+    test_ising(X)

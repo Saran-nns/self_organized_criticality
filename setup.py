@@ -11,7 +11,7 @@ def read(fname):
 
 setup(
     name="complexnetwork",
-    version="0.1.0",
+    version="0.1.1",
     author="Saranraj Nambusubramaniyan",
     author_email="saran_nns@hotmail.com",
     description="Complex networks and Self-Organized Criticality",

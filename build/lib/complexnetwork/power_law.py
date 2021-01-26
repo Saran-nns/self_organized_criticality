@@ -4,7 +4,7 @@ from scipy.optimize import bisect
 import numpy as np
 from scipy.special import zeta
 from scipy import sqrt
-from avalanche import Avalanches
+from complexnetwork.avalanche import Avalanches
 
 
 class PowerLaw(object):

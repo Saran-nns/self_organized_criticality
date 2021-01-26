@@ -1,15 +1,12 @@
 import unittest
 import pickle
 import numpy as np
-from compnet import (
+from complexnetwork import (
     avalanche,
-    branching_factor,
-    exponent_relationships,
     ising,
     power_law,
-    scaling_functions,
 )
-from compnet import utils
+from complexnetwork import utils
 
 # Getting back the pickled matrices:
 with open("sample_matrices.pkl", "rb") as f:
@@ -21,19 +18,13 @@ with open("sample_matrices.pkl", "rb") as f:
         num_active_connections,
     ) = pickle.load(f)
 
-# Default Test inputs
-simulation_inputs = np.random.rand(10, 2)
-gym_input = np.random.rand(10, 1)
-sequence_input = np.random.rand(10, 1)
-
-# Overriding defaults: Sample input
-num_features = 4
-time_steps = 1000
-inputs = np.random.rand(num_features, time_steps)
+X = np.asarray(Exc_activity)
+activity_threshold = 1
+window_sizes = [1, 2, 5]
 
 
 class TestCompNet(unittest.TestCase):
-    def test_avalanche(self, X: np.array, activity_threshold: int = 1):
+    def test_avalanche(self):
 
         self.assertRaises(
             Exception,
@@ -68,14 +59,8 @@ class TestCompNet(unittest.TestCase):
     def test_exponential_relationships(self):
         pass
 
-    def test_ising(self, X, window_sizes=[2, 5]):
-        """Test avalanche module
+    def test_ising(self):
 
-        Args:
-            X (np.array): Neural activity
-            
-            window_sizes (list, optional): Time window sizes to compute the spin at various time scales. Defaults to [2, 5].
-        """
         self.assertRaises(
             Exception, ising.IsingModel().compute_spin(X, window_sizes=window_sizes)
         )
@@ -94,7 +79,7 @@ class TestCompNet(unittest.TestCase):
         )
         self.assertRaises(Exception, ising.IsingModel().plotQ(Q))
 
-    def test_powerlaw(self, X: np.array, activity_threshold: float = 1.0):
+    def test_powerlaw(self):
 
         (_, _, avalanche_sizes, _,) = avalanche.Avalanches().avalanche_observables(
             X, activity_threshold=activity_threshold
@@ -123,7 +108,7 @@ class TestCompNet(unittest.TestCase):
 
     def test_utils(self,):
 
-        self.assertRaises(Exception, utils.compute_spike_count(spike_train))
+        self.assertRaises(Exception, utils.compute_spike_count(X))
 
 
 if __name__ == "__main__":
